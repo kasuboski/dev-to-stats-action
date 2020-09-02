@@ -1,6 +1,9 @@
 name: 'Dev.to Stats'
 description: 'Pull stats about your Dev.to posts'
 author: 'Josh Kasuboski'
+branding:
+  icon: bar-chart-2
+  color: purple
 inputs:
   apiKey:
     required: true
