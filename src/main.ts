@@ -1,16 +1,19 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import {getArticleStats, exportStats} from './dev-to'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    const apiKey: string = core.getInput('apiKey', {required: true})
+    core.setSecret(apiKey)
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const outFile: string = core.getInput('outFile')
 
-    core.setOutput('time', new Date().toTimeString())
+    core.info('Fetching stats...')
+    const stats = await getArticleStats(apiKey)
+    core.debug(JSON.stringify(stats))
+
+    core.info('Writing stats...')
+    await exportStats(stats, outFile)
   } catch (error) {
     core.setFailed(error.message)
   }

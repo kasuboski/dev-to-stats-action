@@ -1,11 +1,14 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Dev.to Stats'
+description: 'Pull stats about your Dev.to posts'
+author: 'Josh Kasuboski'
 inputs:
-  milliseconds: # change this
+  apiKey:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'API Key for Dev.to'
+  outFile:
+    required: true
+    description: 'The file path to write the stats as json'
+    default: 'dev-to-stats/stats.json'
 runs:
   using: 'node12'
   main: 'dist/index.js'
