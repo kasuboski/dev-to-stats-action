@@ -28,9 +28,7 @@ const path_1 = __webpack_require__(622);
 const DEV_TO_URL = 'https://dev.to/api';
 function getArticleStats(apiKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const headers = { 'api-key': apiKey };
-        const response = yield node_fetch_1.default(`${DEV_TO_URL}/articles/me/published`, { headers });
-        const articles = yield response.json();
+        const articles = yield fetchArticles(apiKey);
         return aggregateCounts(articles);
     });
 }
@@ -53,6 +51,26 @@ function aggregateCounts(articles) {
     }, { public_reactions_count: 0, page_views_count: 0, comments_count: 0 });
 }
 exports.aggregateCounts = aggregateCounts;
+function fetchArticles(apiKey) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let articles = [];
+        const headers = { 'api-key': apiKey };
+        let result = [];
+        let page = 1;
+        do {
+            const response = yield node_fetch_1.default(`${DEV_TO_URL}/articles/me/published?page=${page}`, { headers });
+            if (!response.ok) {
+                throw Error(`Invalid response status: ${response.status}`);
+            }
+            result = yield response.json();
+            articles = articles.concat(...result);
+            page++;
+            // wait 500ms to avoid rate-limit
+            yield new Promise(r => setTimeout(r, 500));
+        } while (result.length > 0);
+        return articles;
+    });
+}
 
 
 /***/ }),

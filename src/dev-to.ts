@@ -15,9 +15,7 @@ interface DevToArticleStats {
 export async function getArticleStats(
   apiKey: string
 ): Promise<DevToArticleStats> {
-  const headers = {'api-key': apiKey}
-  const response = await fetch(`${DEV_TO_URL}/articles/me/published`, {headers})
-  const articles: DevToArticleStats[] = await response.json()
+  const articles = await fetchArticles(apiKey)
   return aggregateCounts(articles)
 }
 
@@ -43,4 +41,30 @@ export function aggregateCounts(
     },
     {public_reactions_count: 0, page_views_count: 0, comments_count: 0}
   )
+}
+
+async function fetchArticles(apiKey: string): Promise<DevToArticleStats[]> {
+  let articles: DevToArticleStats[] = []
+  const headers = {'api-key': apiKey}
+  let result: DevToArticleStats[] = []
+  let page = 1
+  do {
+    const response = await fetch(
+      `${DEV_TO_URL}/articles/me/published?page=${page}`,
+      {headers}
+    )
+    if (!response.ok) {
+      throw Error(`Invalid response status: ${response.status}`)
+    }
+
+    result = await response.json()
+
+    articles = articles.concat(...result)
+    page++
+
+    // wait 500ms to avoid rate-limit
+    await new Promise(r => setTimeout(r, 500))
+  } while (result.length > 0)
+
+  return articles
 }
