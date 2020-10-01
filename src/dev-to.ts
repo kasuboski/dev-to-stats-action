@@ -10,13 +10,16 @@ interface DevToArticleStats {
   public_reactions_count: number
   page_views_count: number
   comments_count: number
+  articles_count?: number
 }
 
 export async function getArticleStats(
   apiKey: string
 ): Promise<DevToArticleStats> {
   const articles = await fetchArticles(apiKey)
-  return aggregateCounts(articles)
+  const stats = aggregateCounts(articles)
+  stats.articles_count = articles.length
+  return stats
 }
 
 export async function exportStats(
