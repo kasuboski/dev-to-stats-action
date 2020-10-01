@@ -29,7 +29,9 @@ const DEV_TO_URL = 'https://dev.to/api';
 function getArticleStats(apiKey) {
     return __awaiter(this, void 0, void 0, function* () {
         const articles = yield fetchArticles(apiKey);
-        return aggregateCounts(articles);
+        const stats = aggregateCounts(articles);
+        stats.articles_count = articles.length;
+        return stats;
     });
 }
 exports.getArticleStats = getArticleStats;

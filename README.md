@@ -2,7 +2,7 @@
   <a href="https://github.com/kasuboski/dev-to-stats-action/actions"><img alt="dev.to stats-action status" src="https://github.com/kasuboski/dev-to-stats-action/workflows/build-test/badge.svg"></a>
 </p>
 
-# Get the Article Stats from Dev.to
+# Get Article Stats from Dev.to
 ```yaml
 name: Get Stats
 on:
